@@ -1,0 +1,260 @@
+body.access-restricted .toolbar__group--wide,
+body.access-restricted .toolbar__group--inline,
+body.access-restricted #reloadBtn,
+body.access-restricted #clearBtn,
+body.access-restricted #reportsPanel,
+body.access-restricted #registrationPanel,
+body.access-restricted #markAllPresentBtn,
+body.access-restricted #markAllAbsentBtn,
+body.access-restricted #actionsPanel .panel__actions button:not(#saveBtn),
+body.access-restricted #actionsPanel .panel__head p,
+body.access-restricted .student__stats,
+body.access-restricted .student__note,
+body.access-restricted .student [data-action="toggle"]{
+  display:none !important;
+}
+
+body.access-restricted .summary-grid .stat:nth-child(5),
+body.access-restricted .summary-grid .stat:nth-child(6){
+  display:none;
+}
+
+body.access-restricted .student__actions{
+  grid-template-columns:repeat(3, minmax(0,1fr));
+}
+
+body.access-restricted.access-share-reports #actionsPanel .panel__actions #sendTurmaBtn,
+body.access-restricted.access-share-reports #actionsPanel .panel__actions #sendGeralBtn{
+  display:inline-flex !important;
+}
+body.access-self:not([data-route-mode="login"]) .app {
+  display: none !important;
+}
+
+body[data-route-mode="login"] .app > *:not(#routePortal) {
+  display: none !important;
+}
+
+
+.shortcut-panel{
+  margin-bottom:16px;
+  padding:14px 16px;
+}
+
+.shortcut-panel__btn{
+  width:100%;
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.02rem;
+}
+
+.panel__actions--call{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:10px;
+  width:100%;
+}
+.panel__actions--call .btn{
+  width:100%;
+}
+.panel__actions--call #saveBtn{
+  grid-column:1 / -1;
+  min-height:60px;
+  font-size:1.04rem;
+}
+.panel__actions--call-next{
+  grid-column:1 / -1;
+}
+
+#selfAccessPanel {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(12, 18, 38, 0.96), rgba(25, 33, 63, 0.96));
+}
+
+body.access-self #selfAccessPanel {
+  display: flex;
+}
+
+.self-access-card {
+  width: min(100%, 520px);
+  padding: 28px;
+  border-radius: 28px;
+  text-align: left;
+}
+
+.self-access-card h1 {
+  margin: 14px 0 10px;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  line-height: 1.05;
+}
+
+.self-access-card p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.self-access-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.self-access-phone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.self-access-phone__prefix {
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.self-access-phone__input {
+  flex: 1 1 140px;
+  min-width: 120px;
+  text-align: center;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+}
+
+.feedback--inline {
+  margin-top: 14px;
+}
+
+
+.route-portal--login{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:calc(100vh - 32px);
+  padding:20px 0;
+  background:transparent;
+  border:none;
+  box-shadow:none;
+}
+
+.route-login-card{
+  width:min(100%, 460px);
+  padding:28px;
+  border-radius:28px;
+  display:grid;
+  gap:14px;
+}
+
+.route-login-card h1{
+  margin:8px 0 0;
+  font-size:clamp(1.8rem, 4vw, 2.6rem);
+  line-height:1.05;
+}
+
+.route-login-card__subtitle{
+  margin:0;
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.route-login-form{
+  display:grid;
+  gap:14px;
+}
+
+.route-login-remember{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:700;
+  color:var(--muted);
+}
+
+.route-login-remember input{
+  width:18px;
+  height:18px;
+  margin:0;
+  accent-color:var(--accent);
+}
+
+.route-login-form__links{
+  display:flex;
+  justify-content:flex-end;
+}
+
+.route-login-link{
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--accent);
+  font-weight:700;
+  text-decoration:underline;
+  cursor:pointer;
+}
+
+.route-login-form__actions{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:10px;
+  margin-top:4px;
+}
+
+.route-login-form__actions .btn{
+  width:100%;
+}
+
+.route-login-dialog{
+  border:none;
+  padding:0;
+  background:transparent;
+  width:min(92vw, 420px);
+}
+
+.route-login-dialog::backdrop{
+  background:rgba(11, 20, 37, 0.45);
+  backdrop-filter:blur(2px);
+}
+
+.route-login-dialog__card{
+  padding:24px;
+  border-radius:24px;
+  display:grid;
+  gap:12px;
+}
+
+.route-login-dialog__card h2{
+  margin:0;
+  font-size:1.2rem;
+}
+
+.route-login-dialog__card p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.route-login-dialog__actions{
+  display:flex;
+  justify-content:flex-end;
+}
+
+@media (max-width: 520px){
+  .route-login-form__actions{
+    grid-template-columns:1fr;
+  }
+  .route-login-card{
+    padding:22px;
+    border-radius:24px;
+  }
+}

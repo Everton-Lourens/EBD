@@ -1,0 +1,136 @@
+// Configure a URL da API HTTP do backend.
+const APP_BASE_URL = new URL('../../../', document.currentScript?.src || window.location.href).href;
+const APP_BASE_PATH = new URL(APP_BASE_URL).pathname.replace(/\/+$/, '') || '/';
+
+function buildAppRoutePath(path = '/') {
+  const raw = String(path || '/').trim();
+  const normalized = raw.startsWith('/') ? raw : `/${raw}`;
+  const base = APP_BASE_PATH === '/' ? '' : APP_BASE_PATH;
+  return `${base}${normalized}`.replace(/\/+/g, '/');
+}
+
+const BACKEND_API_URL = window.BACKEND_API_URL || window.API_BASE_URL || 'https://ebd-fj9u.onrender.com/api';
+
+window.APP_BASE_URL = APP_BASE_URL;
+window.APP_BASE_PATH = APP_BASE_PATH;
+window.buildAppRoutePath = buildAppRoutePath;
+window.BACKEND_API_URL = BACKEND_API_URL;
+window.API_BASE_URL = BACKEND_API_URL;
+
+const STORAGE_KEY = 'prb_presenca_turmas_v2';
+const ROSTER_CACHE_KEY = 'prb_roster_cache_v1';
+const ROSTER_CACHE_VERSION = 1;
+const DEBUG_CONSOLE_ACCESS_CODE = '50292230';
+
+// O carregamento inicial usa somente o que vem do backend.
+const APPLY_LOCAL_DRAFTS_ON_LOAD = false;
+
+function isDebugConsoleEnabled(accessCode = state.accessCode) {
+  return String(accessCode || '').trim() === DEBUG_CONSOLE_ACCESS_CODE;
+}
+
+function syncDebugConsoleVisibility() {
+  const enabled = isDebugConsoleEnabled();
+  if (document?.body) {
+    document.body.classList.toggle('debug-console-enabled', enabled);
+  }
+  const consoleBox = document.getElementById('debugConsole');
+  if (consoleBox) {
+    consoleBox.hidden = !enabled;
+  }
+  return enabled;
+}
+
+function todayKey() {
+  const d = new Date();
+  const tz = d.getTimezoneOffset() * 60000;
+  return new Date(Date.now() - tz).toISOString().slice(0, 10);
+}
+
+const state = {
+  syncToken: 0,
+  loading: false,
+  dateKey: todayKey(),
+  turmas: [],
+  alunos: [],
+  chamadasByTurma: {},
+  resumoGeral: null,
+  selectedTurmaId: '',
+  search: '',
+  showInactive: true,
+  dirty: false,
+  initialized: false,
+  autosaveTimer: null,
+  editingAlunoId: '',
+  accessCode: '',
+  accessMode: 'self',
+  selfCelularSuffix: '',
+  baseRowsCount: 0,
+  routeName: '',
+  routeParams: {},
+  routeData: null,
+  inativos: [],
+  routerStarted: false,
+  session: null,
+};
+
+const ACCESS_CODES = {
+  full: new Set(['50292230']),
+  restricted: new Set(['ninha', 'cleverton', 'larissa', 'taiz', 'alais', 'samuel']),
+};
+
+const els = {
+  dateInput: document.getElementById('dateInput'),
+  turmaSelect: document.getElementById('turmaSelect'),
+  alunoTurma: document.getElementById('alunoTurma'),
+  searchInput: document.getElementById('searchInput'),
+  responsavelLabel: document.getElementById('responsavelLabel'),
+  showInactive: document.getElementById('showInactive'),
+  reloadBtn: document.getElementById('reloadBtn'),
+  clearBtn: document.getElementById('clearBtn'),
+  addAlunoPageBtn: document.getElementById('addAlunoPageBtn'),
+  saveBtn: document.getElementById('saveBtn'),
+  sendTurmaBtn: document.getElementById('sendTurmaBtn'),
+  sendGeralBtn: document.getElementById('sendGeralBtn'),
+  saveNextBtn: document.getElementById('saveNextBtn'),
+  markAllPresentBtn: document.getElementById('markAllPresentBtn'),
+  markAllAbsentBtn: document.getElementById('markAllAbsentBtn'),
+  copyTurmaBtn: document.getElementById('copyTurmaBtn'),
+  copyGeralBtn: document.getElementById('copyGeralBtn'),
+  turmaForm: document.getElementById('turmaForm'),
+  turmaNome: document.getElementById('turmaNome'),
+  turmaOrdem: document.getElementById('turmaOrdem'),
+  alunoForm: document.getElementById('alunoForm'),
+  alunoNome: document.getElementById('alunoNome'),
+  alunoCelular: document.getElementById('alunoCelular'),
+  studentEditModal: document.getElementById('studentEditModal'),
+  studentEditForm: document.getElementById('studentEditForm'),
+  studentEditTitle: document.getElementById('studentEditTitle'),
+  studentEditCode: document.getElementById('studentEditCode'),
+  studentEditName: document.getElementById('studentEditName'),
+  studentEditCelular: document.getElementById('studentEditCelular'),
+  studentEditTurma: document.getElementById('studentEditTurma'),
+  studentEditStatus: document.getElementById('studentEditStatus'),
+  studentEditCancel: document.getElementById('studentEditCancel'),
+  feedback: document.getElementById('feedback'),
+  turmaMeta: document.getElementById('turmaMeta'),
+  summary: {
+    total: document.getElementById('statTotalAlunos'),
+    presentes: document.getElementById('statPresentes'),
+    ausentes: document.getElementById('statAusentes'),
+    percentual: document.getElementById('statPercentual'),
+    oferta: document.getElementById('statOferta'),
+    visitantes: document.getElementById('statVisitantes'),
+    biblias: document.getElementById('statBiblias'),
+    revistas: document.getElementById('statRevistas'),
+  },
+  studentsList: document.getElementById('studentsList'),
+  emptyState: document.getElementById('emptyState'),
+  studentTemplate: document.getElementById('studentTemplate'),
+  turmaReport: document.getElementById('turmaReport'),
+  geralReport: document.getElementById('geralReport'),
+};
+
+let loadingCount = 0;
+let loadingWatchdog = null;
+let loadingWatchdogMessage = 'A operação demorou demais. Tente novamente.';
