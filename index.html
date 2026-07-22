@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="Tela de login com visual limpo, profissional e pronto para GitHub Pages." />
     <title>Login | Área Restrita</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./src/modules/auth/pages/login/login.css" />
   </head>
   <body>
     <main class="shell" aria-label="Tela de login">
@@ -69,6 +69,10 @@
       </section>
     </main>
 
-    <script src="./app.js"></script>
-  </body>
+    <script src="./src/app/config/api.js"></script>
+    <script src="./src/app/config/storage.js"></script>
+    <script src="./src/shared/services/api-client.js"></script>
+    <script src="./src/app/config/error.js"></script>
+    <script src="./src/modules/auth/pages/login/login.js"></script>
+</body>
 </html>

@@ -1,9 +1,13 @@
-# Assembleia Login Shell
+# Frontend EBD
 
-Interface de login em dois modos:
+Frontend estático organizado por domínio, pronto para consumo via API e publicação no GitHub Pages.
 
-- **Local** com Node.js/Express para desenvolvimento.
-- **Produção estática** no GitHub Pages, usando a pasta `docs/`.
+## Estrutura
+
+- `src/app/` — configuração e bootstrap
+- `src/modules/` — domínios do sistema
+- `src/shared/` — código reutilizável
+- `src/assets/` — recursos estáticos
 
 ## Execução local
 
@@ -12,19 +16,10 @@ npm install
 npm start
 ```
 
-O front-end local continua servindo via Express, enquanto o login chama a API local em `http://localhost:3000/api/v1`.
-
-## Gerar a versão para GitHub Pages
+## Publicação no GitHub Pages
 
 ```bash
 npm run build
 ```
 
-Isso copia o conteúdo de `src/` para `docs/` e cria o arquivo `.nojekyll`, deixando a publicação pronta para Pages.
-
-## Ambiente da API
-
-O front-end escolhe automaticamente a base da API:
-
-- local: `http://localhost:3000/api/v1`
-- produção/GitHub Pages: `https://ebd-fj9u.onrender.com/api/v1`
+O build gera a pasta `docs/` com os arquivos estáticos prontos para Pages.

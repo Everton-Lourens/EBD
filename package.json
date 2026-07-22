@@ -1,8 +1,8 @@
 {
-  "name": "assembleia-login-shell",
+  "name": "frontend-ebd",
   "version": "1.0.0",
   "private": true,
-  "description": "Tela de login híbrida: Express local e GitHub Pages estático.",
+  "description": "Frontend estático por domínio para consumo de API e publicação no GitHub Pages.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

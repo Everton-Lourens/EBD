@@ -7,6 +7,7 @@ Criada uma base de login única com visual religioso limpo, integração com `PO
 - O projeto precisa manter uma fonte estática compatível com GitHub Pages.
 - O token do login deve ficar apenas na sessão atual.
 - O lembrete persiste somente o nome de usuário.
+- Após autenticação bem-sucedida, o fluxo atual redireciona para o dashboard inicial em `src/modules/dashboard/pages/home/index.html`.
 
 ## Próximos passos
-Adicionar navegação futura apenas depois que novas telas forem definidas.
+Evoluir a primeira tela do dashboard aos poucos, sem quebrar o redirect já estabelecido.

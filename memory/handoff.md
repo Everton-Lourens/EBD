@@ -1,7 +1,32 @@
 # Handoff
 
-- A aplicação tem apenas uma tela funcional: login.
+- A aplicação tem login, dashboard e o módulo de classes como fluxos funcionais principais.
 - O front escolhe a base da API automaticamente: localhost em desenvolvimento e Render em produção/GitHub Pages.
 - O login espera um token em campos comuns de resposta (`token`, `accessToken`, `data.token`, `result.token`, `auth.token`).
-- O estado pós-login é apenas um painel de confirmação dentro da mesma página, sem outras telas.
+- O dashboard protege a entrada: sem token válido na `sessionStorage`, a página volta para a tela de login.
+- O dashboard foi enxugado e virou apenas um hub de navegação, sem bloco hero com métricas ou textos explicativos longos.
+- A página de classes agora consome `GET /api/v1/classes`, renderiza as classes recebidas e, ao clicar em uma classe, navega para a tela de chamada levando a classe selecionada na query string.
+- A listagem de classes também exibe um indicador visual ao lado do nome: `✅` quando `chamada_ja_feita` é verdadeira e `🟡` quando a chamada ainda não foi feita.
+- A página de classes deve usar o identificador real do banco (`id_classe`, com aliases compatíveis) ao montar `classId`; nunca usar índice da lista como fallback.
+- A tela de chamada agora carrega alunos ativos e inativos por consultas separadas (`GET /students?classId=:id&status=ativo` e `GET /students?classId=:id&status=inativo`), com fallback limitado a rotas equivalentes.
+- Os motivos de inativação passaram a ser carregados em lote quando possível (`GET /students/inactive-reasons?ids=...`), com fallback para `GET /students/:id/status-history` apenas quando necessário.
+- O salvamento da chamada exige `id_aluno_classe` válido para cada aluno; o frontend pode reconciliar o estado local com o snapshot atual da chamada para recuperar o vínculo antes de bloquear o envio do `PATCH`.
+- O caminho canônico agora é `PATCH /attendance/:callId` com `students[]`; o envio por aluno fica apenas como compatibilidade legado.
+- Ao salvar a chamada, o frontend envia apenas os alunos ativos/elegíveis da chamada aberta; os cards inativos permanecem visíveis, mas não participam do `PATCH`.
+- Ao mesclar listas de alunos ativos e inativos, o front precisa preservar qualquer `id_aluno_classe` já encontrado, tanto no objeto principal quanto no `raw`; uma resposta parcial não pode apagar um vínculo válido com campo vazio.
+- Antes de salvar, o frontend faz uma última reparação do vínculo usando o snapshot da chamada para tentar completar qualquer aluno que ainda tenha ficado sem `attendanceKey` no estado local.
+- O cadastro de aluno na chamada tenta recuperar `id_aluno_classe` no snapshot atual da chamada quando a resposta de matrícula vier incompleta.
+- O fluxo de cadastro do aluno na chamada cria primeiro a pessoa em `POST /people` e depois efetiva a matrícula em `POST /students/enroll` usando a classe atual.
+- No formulário de cadastro, apenas o nome do aluno é tratado como obrigatório; os demais campos ficam opcionais.
+- O Express local deve servir o diretório raiz do projeto, não apenas `src/`, para que `/src/modules/...` funcione igual ao GitHub Pages.
+- Nas páginas `src/modules/classe/pages/index.html` e `src/modules/chamada/pages/index.html`, os assets compartilhados devem ser referenciados com `../../../app/...` e `../../../shared/...`; profundidade maior quebra o carregamento no navegador.
+- Rotas curtas como `/chamada` já possuem atalhos locais para facilitar testes de navegação durante o desenvolvimento.
 - Publicação no GitHub Pages deve usar `docs/` como raiz estática.
+- A página interna de 404 em `src/modules/errors/pages/not-found/index.html` usa `./error.css` e `./error.js`, e o botão "Voltar para o início" aponta para `../../../../../index.html` a partir do diretório da página.
+- A configuração compartilhada deve vir de um único conjunto de módulos: `src/app/config/api.js`, `src/app/config/storage.js` e `src/shared/services/api-client.js`; as telas não devem redeclarar esses objetos inline.
+- A atualização de um status de presença na chamada deve tocar apenas o card afetado, sem recriar toda a lista.
+
+- O histórico de status de alunos inativos só pode ser consultado com `id` de aluno confiável; o frontend não deve adivinhar esse identificador com fallback posicional.
+- O fluxo de chamada agora trata `classId` como identificador opaco de ponta a ponta; a tela não faz mais coerção para número ao abrir a chamada nem ao montar a matrícula do aluno.
+- O token de autenticação deixou de ser salvo como objeto JSON com metadados e passou a ser persistido como string simples em `sessionStorage`, com leitura compatível com sessões antigas.
+- A redução de exposição do token é apenas parcial; a proteção definitiva continua dependendo de cookie `HttpOnly/Secure` no backend.

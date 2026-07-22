@@ -13,5 +13,7 @@ Como as origens são diferentes, o backend precisa permitir CORS para o domínio
 
 ## Solução
 - Manter a URL base do backend configurada no front-end por ambiente.
-- Armazenar o token somente em `sessionStorage`.
+- O token continua em `sessionStorage` por compatibilidade com a navegação estática, mas deve ser salvo como string simples, sem metadados extras.
+- O leitor de sessão precisa aceitar tanto o formato novo (string) quanto o legado (objeto JSON).
 - Usar `localStorage` apenas para preferências opcionais, como lembrar o usuário digitado.
+- A migração real de segurança continua sendo `HttpOnly/Secure cookie` no backend, se essa opção estiver disponível.

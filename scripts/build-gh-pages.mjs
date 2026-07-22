@@ -1,16 +1,46 @@
-import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
+import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '..');
-const srcDir = path.join(projectRoot, 'src');
-const docsDir = path.join(projectRoot, 'docs');
+const root = path.resolve(process.cwd());
+const outDir = path.join(root, 'docs');
 
-await rm(docsDir, { recursive: true, force: true });
-await mkdir(docsDir, { recursive: true });
-await cp(srcDir, docsDir, { recursive: true });
-await writeFile(path.join(docsDir, '.nojekyll'), '', 'utf8');
+function ensureDir(dir) {
+  fs.mkdirSync(dir, { recursive: true });
+}
 
-console.log('GitHub Pages assets copied to docs/.');
+function copyDir(src, dest) {
+  ensureDir(dest);
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    if (entry.name === 'docs') continue;
+    if (entry.name === 'node_modules') continue;
+    if (entry.name === '.git') continue;
+
+    const from = path.join(src, entry.name);
+    const to = path.join(dest, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDir(from, to);
+      continue;
+    }
+
+    fs.copyFileSync(from, to);
+  }
+}
+
+fs.rmSync(outDir, { recursive: true, force: true });
+ensureDir(outDir);
+
+for (const file of ['index.html', '404.html']) {
+  const from = path.join(root, file);
+  if (fs.existsSync(from)) {
+    fs.copyFileSync(from, path.join(outDir, file));
+  }
+}
+
+const srcDir = path.join(root, 'src');
+if (fs.existsSync(srcDir)) {
+  copyDir(srcDir, path.join(outDir, 'src'));
+}
+
+fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
+console.log('GitHub Pages build ready in docs/');
