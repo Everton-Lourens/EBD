@@ -12,6 +12,21 @@ app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.get('/src/app/config/config.js', (_req, res) => {
+  const developmentMode = readBooleanEnv('developmentMode', undefined);
+  const runtimeConfig = {};
+
+  if (developmentMode !== undefined) {
+    runtimeConfig.developmentMode = developmentMode;
+  }
+
+  const configPath = path.join(rootDir, 'src/app/config/config.js');
+  const fileContents = fs.existsSync(configPath) ? fs.readFileSync(configPath, 'utf8') : '';
+
+  res.type('application/javascript').send(
+    `window.APP_RUNTIME_CONFIG = Object.freeze(${JSON.stringify(runtimeConfig)});\n${fileContents}`
+  );
+});
 app.get('/src/app/config/error.js', (_req, res) => {
   const enabled = readBooleanEnv('errorDevelopmentMode', false);
   res.type('application/javascript').send(
